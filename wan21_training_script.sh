@@ -17,7 +17,7 @@ save_every_n_epochs=1
 task="t2v-14B" # t2v-1.3B, t2v-14B, i2v-14B, t2i-14B
 
 # load diffusion model, text encoders and vae
-dit="./diffusion_models/wan2.1_t2v_14B_bf16.safetensors" # wan diffusion model (can use fp8 version too)
+dit="./diffusion_models/wan2.1_t2v_14B_fp8_e4m3fn.safetensors" # wan diffusion model (can use fp8 version too)
 vae="./vae/wan_2.1_vae.safetensors" # wan vae 
 t5="./text_encoders/models_t5_umt5-xxl-enc-bf16.pth" # maybe check with safetensors version
 
