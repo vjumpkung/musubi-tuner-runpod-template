@@ -1,4 +1,4 @@
-FROM nvidia/cuda:12.4.1-base-ubuntu20.04
+FROM nvidia/cuda:12.8.1-base-ubuntu22.04
 
 ARG PYTHON_VERSION="3.10"
 ARG CONTAINER_TIMEZONE=UTC 
@@ -51,7 +51,7 @@ WORKDIR /notebooks/musubi-tuner/
 
 # JupyterLab and other python packages
 
-RUN uv pip install --system torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 xformers --index-url https://download.pytorch.org/whl/cu124
+RUN uv pip install --system torch==2.7.1 torchvision==0.22.1 torchaudio==2.7.1 xformers --index-url https://download.pytorch.org/whl/cu128
 
 RUN uv pip install --system jupyterlab jupyter-archive nbformat \
     jupyterlab-git ipywidgets ipykernel ipython pickleshare \
