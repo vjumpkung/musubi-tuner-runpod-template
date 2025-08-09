@@ -5,8 +5,6 @@ ARG CONTAINER_TIMEZONE=UTC
 
 WORKDIR /
 
-RUN mkdir -p /notebooks /notebooks/model/stable_diffusion_ckpt/ /notebooks/model/unet/ /notebooks/model/clip/ /notebooks/model/vae/ /notebooks/lora_project/
-
 COPY . /notebooks/
 
 # Update, install packages and clean up
@@ -57,13 +55,11 @@ RUN uv pip install --system torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1 x
 
 RUN uv pip install --system jupyterlab jupyter-archive nbformat \
     jupyterlab-git ipywidgets ipykernel ipython pickleshare \
-    requests python-dotenv nvitop gdown sageattention setuptools && \
+    requests python-dotenv nvitop gdown sageattention setuptools "numpy<2" && \
     uv pip install --system -e . && \
     uv cache clean
 
 WORKDIR /notebooks
-
-COPY . .
 
 EXPOSE 8888 6006
 CMD ["jupyter", "lab", "--allow-root", "--ip=0.0.0.0", "--no-browser", \
