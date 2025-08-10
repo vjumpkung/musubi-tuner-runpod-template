@@ -15,7 +15,7 @@ max_train_epochs=10
 save_every_n_epochs=1
 
 # load diffusion model, text encoders and vae
-dit="./diffusion_models/qwen_image_fp8_e4m3fn.safetensors" # qwen diffusion model (can use fp8 version too)
+dit="./diffusion_models/qwen_image_bf16.safetensors" # qwen diffusion model (can use fp8 version too)
 vae="./vae/qwen_image_vae.safetensors" # qwen vae 
 text_encoder="./text_encoders/qwen_2.5_vl_7b.safetensors" # maybe check with safetensors version
 
