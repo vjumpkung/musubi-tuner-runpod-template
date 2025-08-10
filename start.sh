@@ -46,10 +46,16 @@ update_musubi_tuner() {
     cd /notebooks/musubi-tuner && git pull --ff-only && cd ..
 }
 
+run_custom_script() {
+    cd /notebooks
+    curl -s https://raw.githubusercontent.com/vjumpkung/vjump-runpod-notebooks-and-script/refs/heads/main/musubi_tuner/custom_script.sh -sSf | bash -s -- -y
+}
+
 # Main execution sequence
 echo "Pod Started"
 configure_dns
 update_musubi_tuner
+run_custom_script
 start_jupyter
 export_env_vars
 echo "Start script(s) finished, pod is ready to use."
