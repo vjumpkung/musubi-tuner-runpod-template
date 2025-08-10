@@ -21,8 +21,8 @@ aria2c \
   --file-allocation=none \
   --summary-interval=10 \
   --dir=./diffusion_models \
-  --out=qwen_image_fp8_e4m3fn.safetensors \
-  "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_fp8_e4m3fn.safetensors"
+  --out=qwen_image_bf16.safetensors \
+  "https://huggingface.co/Comfy-Org/Qwen-Image_ComfyUI/resolve/main/split_files/diffusion_models/qwen_image_bf16.safetensors"
 
 # Download VAE model
 echo "Downloading QWEN Image VAE..."
