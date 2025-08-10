@@ -55,6 +55,6 @@ aria2c \
 echo "All downloads completed!"
 echo ""
 echo "Files downloaded to:"
-echo "  - diffusion_models/qwen_image_fp8_e4m3fn.safetensors"
+echo "  - diffusion_models/qwen_image_bf16.safetensors"
 echo "  - vae/qwen_image_vae.safetensors"
 echo "  - text_encoders/qwen_2.5_vl_7b.safetensors"
