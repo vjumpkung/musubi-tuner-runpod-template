@@ -1,6 +1,6 @@
 FROM nvidia/cuda:12.8.1-base-ubuntu22.04
 
-ARG PYTHON_VERSION="3.10"
+ARG PYTHON_VERSION="3.12"
 ARG CONTAINER_TIMEZONE=UTC 
 
 WORKDIR /
@@ -51,7 +51,7 @@ WORKDIR /notebooks/musubi-tuner/
 
 # JupyterLab and other python packages
 
-RUN uv pip install --system torch torchvision torchaudio xformers --index-url https://download.pytorch.org/whl/cu128
+RUN uv pip install --system torch==2.7.1 torchvision torchaudio xformers --index-url https://download.pytorch.org/whl/cu128
 RUN uv pip install --system jupyterlab jupyter-archive nbformat \
     jupyterlab-git ipywidgets ipykernel ipython pickleshare \
     requests python-dotenv nvitop gdown sageattention setuptools "numpy<2" && \
