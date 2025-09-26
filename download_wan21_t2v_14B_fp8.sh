@@ -55,6 +55,6 @@ aria2c \
 echo "All downloads completed!"
 echo ""
 echo "Files downloaded to:"
-echo "  - diffusion_models/wan2.1_t2v_14B_bf16.safetensors"
+echo "  - diffusion_models/wan2.1_t2v_14B_fp8_e4m3fn.safetensors"
 echo "  - vae/wan_2.1_vae.safetensors"
 echo "  - text_encoders/models_t5_umt5-xxl-enc-bf16.pth"
