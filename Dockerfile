@@ -86,3 +86,5 @@ CMD ["jupyter", "lab", "--allow-root", "--ip=0.0.0.0", "--no-browser", \
     "--FileContentsManager.always_delete_dir=True", "--FileContentsManager.preferred_dir=/notebooks", \
     "--ContentsManager.allow_hidden=True", "--LabServerApp.copy_absolute_path=True", \
     "--ServerApp.token=''", "--ServerApp.password=''"]
+    
+CMD ["/start.sh"]
