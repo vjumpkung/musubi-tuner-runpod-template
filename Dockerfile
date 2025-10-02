@@ -16,6 +16,8 @@ ENV CMAKE_BUILD_PARALLEL_LEVEL=8
 # create notebooks dir
 RUN mkdir -p /notebooks /notebooks/program/
 
+COPY . /notebooks/
+
 # Install basic tools and dependencies first
 RUN ln -snf /usr/share/zoneinfo/$CONTAINER_TIMEZONE /etc/localtime && echo $CONTAINER_TIMEZONE > /etc/timezone
 RUN apt-get update --yes && \
