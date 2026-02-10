@@ -71,7 +71,7 @@ WORKDIR /notebooks/musubi-tuner/
 
 # JupyterLab and other python packages
 
-RUN uv pip install torch==2.8.0 torchvision torchaudio xformers --index-url https://download.pytorch.org/whl/cu128
+RUN uv pip install torch==2.9.1 torchvision torchaudio xformers==0.0.33.post2 --index-url https://download.pytorch.org/whl/cu128
 RUN uv pip install jupyterlab jupyter-archive nbformat \
     jupyterlab-git ipywidgets ipykernel ipython pickleshare \
     requests python-dotenv nvitop gdown sageattention setuptools "numpy<2" && \
