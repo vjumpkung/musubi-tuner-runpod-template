@@ -71,7 +71,8 @@ WORKDIR /notebooks/musubi-tuner/
 
 # JupyterLab and other python packages
 
-RUN uv pip install torch==2.9.1 torchvision torchaudio xformers==0.0.33.post2 --index-url https://download.pytorch.org/whl/cu128
+RUN uv pip install torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0 xformers==0.0.35 --index-url https://download.pytorch.org/whl/cu128
+RUN uv pip install "https://github.com/Comfy-Org/wheels/releases/download/sageattention-latest/sageattention-2.2.0+cu128torch2.10-cp312-cp312-manylinux_2_34_x86_64.manylinux_2_35_x86_64.whl"
 RUN uv pip install jupyterlab jupyter-archive nbformat \
     jupyterlab-git ipywidgets ipykernel ipython pickleshare \
     requests python-dotenv nvitop gdown sageattention setuptools "numpy<2" && \
