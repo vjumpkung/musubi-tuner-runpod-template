@@ -25,6 +25,7 @@ RUN npm install --global "pnpm@${PNPM_VERSION}" && \
     pnpm install --frozen-lockfile && \
     pnpm build && \
     test -f /build/musubi-tuner-gui-backend/web/index.html && \
+    mv /build/musubi-tuner-gui-backend/web /build/musubi-tuner-gui-web && \
     rm -rf /build/musubi-tuner-gui-backend/.git \
         /build/musubi-tuner-gui-frontend/node_modules
 
@@ -112,12 +113,14 @@ RUN uv pip install \
         "numpy<2" && \
     uv pip install -e .
 
-# The backend and its compiled frontend are copied together so FastAPI can
-# serve the SPA and /api from the same origin on port 8000.
+# Install the backend before adding the generated web/ directory. Older backend
+# refs relied on automatic package discovery, which treats web/ as a second
+# top-level Python package and rejects the editable install.
 COPY --from=gui-builder /build/musubi-tuner-gui-backend /opt/musubi-tuner-gui-backend
 RUN uv pip install -e /opt/musubi-tuner-gui-backend && \
-    test -f "${MUSUBI_GUI_WEB_DIR}/index.html" && \
     uv cache clean
+COPY --from=gui-builder /build/musubi-tuner-gui-web /opt/musubi-tuner-gui-backend/web
+RUN test -f "${MUSUBI_GUI_WEB_DIR}/index.html"
 
 # Keep the notebook and helper files available in the shared GUI workspace.
 COPY . /notebooks/
