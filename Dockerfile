@@ -16,9 +16,9 @@ RUN apt-get update && \
 
 WORKDIR /build
 RUN git clone --depth 1 --branch "${GUI_BACKEND_REF}" \
-        "${GUI_BACKEND_REPOSITORY}" musubi-tuner-gui-backend && \
+    "${GUI_BACKEND_REPOSITORY}" musubi-tuner-gui-backend && \
     git clone --depth 1 --branch "${GUI_FRONTEND_REF}" \
-        "${GUI_FRONTEND_REPOSITORY}" musubi-tuner-gui-frontend
+    "${GUI_FRONTEND_REPOSITORY}" musubi-tuner-gui-frontend
 
 WORKDIR /build/musubi-tuner-gui-frontend
 RUN npm install --global "pnpm@${PNPM_VERSION}" && \
@@ -27,7 +27,7 @@ RUN npm install --global "pnpm@${PNPM_VERSION}" && \
     test -f /build/musubi-tuner-gui-backend/web/index.html && \
     mv /build/musubi-tuner-gui-backend/web /build/musubi-tuner-gui-web && \
     rm -rf /build/musubi-tuner-gui-backend/.git \
-        /build/musubi-tuner-gui-frontend/node_modules
+    /build/musubi-tuner-gui-frontend/node_modules
 
 
 FROM nvidia/cuda:12.8.1-base-ubuntu24.04 AS runtime
@@ -59,19 +59,19 @@ ENV DEBIAN_FRONTEND=noninteractive \
 
 RUN apt-get update && \
     apt-get install --yes --no-install-recommends \
-        aria2 \
-        bash \
-        build-essential \
-        ca-certificates \
-        curl \
-        ffmpeg \
-        git \
-        git-lfs \
-        libgl1 \
-        libglib2.0-0 \
-        libstdc++6 \
-        tini \
-        wget && \
+    aria2 \
+    bash \
+    build-essential \
+    ca-certificates \
+    curl \
+    ffmpeg \
+    git \
+    git-lfs \
+    libgl1 \
+    libglib2.0-0 \
+    libstdc++6 \
+    tini \
+    wget && \
     git lfs install --system && \
     rm -rf /var/lib/apt/lists/*
 
@@ -85,32 +85,32 @@ RUN uv python install "${PYTHON_VERSION}" && \
 
 WORKDIR /notebooks
 RUN git clone --depth 1 --branch "${MUSUBI_TUNER_REF}" \
-        "${MUSUBI_TUNER_REPOSITORY}" musubi-tuner
+    "${MUSUBI_TUNER_REPOSITORY}" musubi-tuner
 
 WORKDIR /notebooks/musubi-tuner
 RUN uv pip install \
-        "torch==${TORCH_VERSION}" \
-        "torchvision==${TORCHVISION_VERSION}" \
-        "torchaudio==${TORCHAUDIO_VERSION}" \
-        "xformers==${XFORMERS_VERSION}" \
-        --index-url https://download.pytorch.org/whl/cu128 && \
+    "torch==${TORCH_VERSION}" \
+    "torchvision==${TORCHVISION_VERSION}" \
+    "torchaudio==${TORCHAUDIO_VERSION}" \
+    "xformers==${XFORMERS_VERSION}" \
+    --index-url https://download.pytorch.org/whl/cu128 && \
     uv pip install \
-        "https://github.com/Comfy-Org/wheels/releases/download/sageattention-latest/sageattention-2.2.0+cu128torch2.11-cp312-cp312-manylinux_2_34_x86_64.manylinux_2_35_x86_64.whl" && \
+    "https://github.com/Comfy-Org/wheels/releases/download/sageattention-latest/sageattention-2.2.0+cu128torch2.11-cp312-cp312-manylinux_2_34_x86_64.manylinux_2_35_x86_64.whl" && \
     uv pip install \
-        jupyterlab \
-        jupyter-archive \
-        nbformat \
-        jupyterlab-git \
-        ipywidgets \
-        ipykernel \
-        ipython \
-        pickleshare \
-        requests \
-        python-dotenv \
-        nvitop \
-        gdown \
-        setuptools \
-        "numpy<2" && \
+    jupyterlab \
+    jupyter-archive \
+    nbformat \
+    jupyterlab-git \
+    ipywidgets \
+    ipykernel \
+    ipython \
+    pickleshare \
+    requests \
+    python-dotenv \
+    nvitop \
+    gdown \
+    setuptools \
+    "numpy<2.3" && \
     uv pip install -e .
 
 # Install the backend before adding the generated web/ directory. Older backend
@@ -125,10 +125,10 @@ RUN test -f "${MUSUBI_GUI_WEB_DIR}/index.html"
 # Keep the notebook and helper files available in the shared GUI workspace.
 COPY . /notebooks/
 RUN git clone --depth 1 --branch "${MUSUBI_HELPERS_REF}" \
-        "${MUSUBI_HELPERS_REPOSITORY}" /tmp/musubi-helpers && \
+    "${MUSUBI_HELPERS_REPOSITORY}" /tmp/musubi-helpers && \
     find /tmp/musubi-helpers/musubi_tuner -maxdepth 1 -type f \
-        \( -name '*.sh' -o -name '*.ipynb' \) \
-        -exec cp -f {} /notebooks/ \; && \
+    \( -name '*.sh' -o -name '*.ipynb' \) \
+    -exec cp -f {} /notebooks/ \; && \
     rm -rf /tmp/musubi-helpers && \
     chmod +x /notebooks/*.sh
 
