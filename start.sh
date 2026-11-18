@@ -69,10 +69,38 @@ export_env_vars() {
     fi
 }
 
+ensure_gui_password() {
+    local password_file="${MUSUBI_GUI_DATA_ROOT:-/notebooks/.musubi-gui}/gui_password"
+    local password=""
+
+    # read -r trims surrounding whitespace, like the backend's strip().
+    read -r password <<<"${MUSUBI_GUI_PASSWORD:-}"
+    if [[ -n "${password}" ]]; then
+        log "Password for the GUI and JupyterLab: set from MUSUBI_GUI_PASSWORD"
+    else
+        if [[ -s "${password_file}" ]]; then
+            read -r password <"${password_file}"
+        fi
+        if [[ -z "${password}" ]]; then
+            password=$(od -An -N16 -tx1 /dev/urandom | tr -d ' \n')
+            if [[ ${#password} -ne 32 ]]; then
+                log "Error: could not generate a password; not starting services without one"
+                exit 1
+            fi
+            if ! mkdir -p "${password_file%/*}" ||
+                ! (umask 077 && printf '%s\n' "${password}" >"${password_file}"); then
+                log "Warning: could not save the password to ${password_file}; a new one will be generated on the next start"
+            fi
+        fi
+        log "Password for the GUI and JupyterLab: ${password} (set MUSUBI_GUI_PASSWORD to choose your own)"
+    fi
+    export MUSUBI_GUI_PASSWORD="${password}"
+}
+
 start_jupyter() {
     log "Starting Jupyter Lab on port ${JUPYTER_PORT:-8888}"
     cd /notebooks
-    jupyter lab \
+    JUPYTER_TOKEN="${MUSUBI_GUI_PASSWORD}" jupyter lab \
         --allow-root \
         --ip=0.0.0.0 \
         --port="${JUPYTER_PORT:-8888}" \
@@ -87,8 +115,6 @@ start_jupyter() {
         --FileContentsManager.preferred_dir=/notebooks \
         --ContentsManager.allow_hidden=True \
         --LabServerApp.copy_absolute_path=True \
-        --ServerApp.token='' \
-        --ServerApp.password='' \
         > /notebooks/jupyter.log 2>&1 &
     JUPYTER_PID=$!
 }
@@ -127,6 +153,7 @@ trap shutdown EXIT INT TERM
 log "Pod started"
 configure_dns
 refresh_runtime_assets
+ensure_gui_password
 export_env_vars
 start_gui
 start_jupyter

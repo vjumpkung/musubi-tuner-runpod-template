@@ -60,23 +60,30 @@ default `./musubi-tuner`, model, output, and logging paths.
 | `MUSUBI_CONFIGURE_DNS` | `1` | Use Google DNS inside the container; set to `0` to keep platform DNS |
 | `MUSUBI_GUI_DATA_ROOT` | `/notebooks/.musubi-gui` | Persistent GUI state |
 | `MUSUBI_GUI_WORKSPACE_ROOT` | `/notebooks` | Allowed root for GUI paths |
-| `MUSUBI_GUI_PASSWORD` | unset | Password for the GUI, its API, and the MCP endpoint. When unset, there is no login |
+| `MUSUBI_GUI_PASSWORD` | random | Password for the GUI, its API, the MCP endpoint, and JupyterLab. When unset, a random password is generated and printed in the container log |
 
 If a startup refresh cannot reach GitHub, the container logs a warning and
 continues with the versions included in the image.
 
 ## Password and MCP
 
-The GUI shows a login page and protects its API and MCP endpoint only when
-`MUSUBI_GUI_PASSWORD` is set. It is unset by default, so anyone who has the
-port `8000` URL can use the GUI. For a RunPod pod, set a long random value in
-the template's **Environment Variables** before deploying. The GUI's sidebar
-then has a **Log out** button, and sessions last 7 days. Wrong passwords are
-throttled to about one attempt per second.
+The GUI, its API, the MCP endpoint, and JupyterLab share one password. If
+`MUSUBI_GUI_PASSWORD` is unset or blank, the first start generates a random
+password and saves it in `/notebooks/.musubi-gui/gui_password`. Every start
+prints it in the container log; on RunPod, open the pod and select **Logs**:
 
-```bash
-MUSUBI_GUI_PASSWORD=<long random password>
+```text
+[musubi-template] Password for the GUI and JupyterLab: <password> (set MUSUBI_GUI_PASSWORD to choose your own)
 ```
+
+To choose your own password, set `MUSUBI_GUI_PASSWORD` in the template's
+**Environment Variables** before deploying. A password you set is never
+printed. To generate a new random password, delete
+`/notebooks/.musubi-gui/gui_password` and restart the pod. Changing the
+password signs out existing GUI sessions.
+
+The GUI's sidebar has a **Log out** button, and sessions last 7 days. Wrong
+passwords are throttled to about one attempt per second.
 
 The GUI also serves an MCP endpoint at `/mcp` on the same port, which lets an
 AI client such as Claude Code check the system, start downloads, manage dataset
@@ -92,10 +99,9 @@ The MCP endpoint cannot delete data or upload files. See the
 [backend README](https://github.com/vjumpkung/musubi-tuner-gui-backend#mcp-server)
 for the tool list.
 
-JupyterLab on port `8888` is unchanged and still has no token or password.
-Because it is a terminal on the pod, anyone who can open the Jupyter URL can
-also read the pod's environment variables, including `MUSUBI_GUI_PASSWORD`, so
-do not share that link.
+JupyterLab on port `8888` asks for the same password in its **Password or
+token** box. Jupyter is a terminal on the pod, so anyone with the password can
+read every file and environment variable on it; do not share it.
 
 The login page, realtime updates, and MCP endpoint come from the GUI
 repositories' `main` branches, which the Dockerfile clones at build time.
