@@ -60,6 +60,43 @@ default `./musubi-tuner`, model, output, and logging paths.
 | `MUSUBI_CONFIGURE_DNS` | `1` | Use Google DNS inside the container; set to `0` to keep platform DNS |
 | `MUSUBI_GUI_DATA_ROOT` | `/notebooks/.musubi-gui` | Persistent GUI state |
 | `MUSUBI_GUI_WORKSPACE_ROOT` | `/notebooks` | Allowed root for GUI paths |
+| `MUSUBI_GUI_PASSWORD` | unset | Password for the GUI, its API, and the MCP endpoint. When unset, there is no login |
 
 If a startup refresh cannot reach GitHub, the container logs a warning and
 continues with the versions included in the image.
+
+## Password and MCP
+
+The GUI shows a login page and protects its API and MCP endpoint only when
+`MUSUBI_GUI_PASSWORD` is set. It is unset by default, so anyone who has the
+port `8000` URL can use the GUI. For a RunPod pod, set a long random value in
+the template's **Environment Variables** before deploying. The GUI's sidebar
+then has a **Log out** button, and sessions last 7 days. Wrong passwords are
+throttled to about one attempt per second.
+
+```bash
+MUSUBI_GUI_PASSWORD=<long random password>
+```
+
+The GUI also serves an MCP endpoint at `/mcp` on the same port, which lets an
+AI client such as Claude Code check the system, start downloads, manage dataset
+configs, and queue and monitor training jobs. Through the RunPod proxy, connect
+to `https://<POD_ID>-8000.proxy.runpod.net/mcp` with the password as a Bearer
+token:
+
+```bash
+claude mcp add --transport http musubi-tuner-gui https://<POD_ID>-8000.proxy.runpod.net/mcp --header "Authorization: Bearer <password>"
+```
+
+The MCP endpoint cannot delete data or upload files. See the
+[backend README](https://github.com/vjumpkung/musubi-tuner-gui-backend#mcp-server)
+for the tool list.
+
+JupyterLab on port `8888` is unchanged and still has no token or password.
+Because it is a terminal on the pod, anyone who can open the Jupyter URL can
+also read the pod's environment variables, including `MUSUBI_GUI_PASSWORD`, so
+do not share that link.
+
+The login page, realtime updates, and MCP endpoint come from the GUI
+repositories' `main` branches, which the Dockerfile clones at build time.
+Rebuild the image to pick them up.
